@@ -1,4 +1,4 @@
-# standard method
+# Standard Method Numerical
 
 def BinarySearch(arr: list[int], target):
     low, high = 0, len(arr) - 1
