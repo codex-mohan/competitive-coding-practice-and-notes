@@ -1,0 +1,64 @@
+---
+title: Two-Pointer Tricks
+---
+
+# Two-Pointer Tricks
+
+## 1. Bitwise NOT (`~i`) as a Mirror Index
+
+In Python, `~` is the **bitwise NOT** operator. For any integer `i`:
+
+$$
+\sim i = -(i + 1)
+$$
+
+When used as a list index, this acts as a **symmetric mirror** for two-pointer traversal:
+
+| `i` | `~i` | Meaning |
+|-----|------|---------|
+| `0` | `-1` | last element |
+| `1` | `-2` | second-to-last element |
+| `2` | `-3` | third-to-last element |
+
+### Why it matters
+
+Instead of writing `n - 1 - i` or managing a separate `right` pointer, `~i` automatically grabs the corresponding element from the back of the array as `i` moves forward from the front.
+
+### Example — Palindrome Check
+
+```python
+def is_palindrome(s: list) -> bool:
+    n = len(s)
+    for i in range(n // 2):
+        if s[i] != s[~i]:
+            return False
+    return True
+```
+
+- `i = 0` → compare `s[0]` with `s[~0]` = `s[-1]`
+- `i = 1` → compare `s[1]` with `s[~1]` = `s[-2]`
+- …and so on toward the middle.
+
+### Example — Sum to Target
+
+```python
+def two_sum_sorted(arr: list[int], target: int) -> tuple[int, int]:
+    left, right = 0, len(arr) - 1
+    while left < right:
+        total = arr[left] + arr[right]
+        if total == target:
+            return (left, right)
+        elif total < target:
+            left += 1
+        else:
+            right -= 1
+    return (-1, -1)
+```
+
+Here `~left` doesn't replace `right` because the pointers move **independently**. The `~i` trick shines when both pointers are **symmetric** (move together toward the center), not independent.
+
+### When to use `~i`
+
+- ✅ **Symmetric traversal** — both sides mirror each other (`for i in range(n // 2)`)
+- ✅ **Palindrome, reversals, symmetric comparisons**
+- ❌ **Independent pointers** — when `left` and `right` move at different speeds or conditions (use separate variables)
